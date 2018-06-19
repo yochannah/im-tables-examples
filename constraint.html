@@ -1,77 +1,92 @@
 <!doctype html>
 <html>
-  <head>
-<meta name="description" content="Adding constraints to a table">
-    <script src="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/imjs/3.15.0/im.min.js"></script>
-    <script src="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/im-tables/2.0.2/imtables.min.js"></script>
-    <link href="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/im-tables/2.0.2/main.css" rel="stylesheet">
-    <title>Adding a query dynamically after the table is initialised</title>
-  </head>
-  <body>
 
-  <a href="index.html">Back</a>
-  <a href="http://yochannah.github.io/im-tables-examples/">View source on GitHub</a>
+<head>
+  <meta name="description" content="Adding constraints to a table">
+  <script src="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/imjs/3.15.0/im.min.js"></script>
+  <script src="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/im-tables/2.0.2/imtables.min.js"></script>
+  <link href="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/im-tables/2.0.2/main.css" rel="stylesheet">
+  <link href="styles/main.css" rel="stylesheet" />
+  <title>Adding a query dynamically after the table is initialised</title>
+</head>
 
-    <script>
-var selector = '#some-elem';
-var service  = {root: 'http://www.flymine.org/flymine/service/'};
-var query    = {
-  "name": "Gene_GO",
-  "title": "Gene --> GO terms",
-  "comment": "06.06.07 updated to work from gene class - Philip",
-  "description": "Search for GO annotations for a particular gene.",
-  "from": "Gene",
-  "select": [
-    "symbol",
-    "secondaryIdentifier",
-    "goAnnotation.ontologyTerm.identifier",
-    "goAnnotation.ontologyTerm.name",
-    "goAnnotation.evidence.code.code",
-    "goAnnotation.ontologyTerm.namespace",
-    "goAnnotation.qualifier"
-  ],
-  "orderBy": [
-    {
-      "path": "secondaryIdentifier",
-      "direction": "ASC"
-    }
-  ],
-  "where": [
-    {
-      "path": "Gene",
-      "op": "LOOKUP",
-      "value": "Notch",
-      "extraValue": "",
-      "code": "A",
-      "editable": true,
-      "switched": "LOCKED",
-      "switchable": false
-    }
-  ]
-};
+<body>
 
-imtables.loadTable(
-  selector, // Can also be an element, or a jQuery object.
-  {"start":0,"size":25}, // May be null
-  {service: service, query: query} // May be an imjs.Query
-).then(
-  function (table) { console.log('Table loaded', table);
-  //to add a constraint:
-  table.query.addConstraint(
-    {
-      "path": "goAnnotation.ontologyTerm.name",
-      "op": "==",
-      "value": "protein binding"
-    }
-  )
+  <nav>
+    <a href="index.html">Back</a>
+    <a href="https://github.com/yochannah/im-tables-examples/blob/master/constraint.html">View source on GitHub</a>
+  </nav>
 
- },
-  function (error) { console.error('Could not load table', error); }
-);
-    </script>
+  <h1>Adding a query dynamically after the table is initialised</h1>
 
-        <div id="some-elem"></div>
+  <script>
+    var selector = '#some-elem';
+    var service = {
+      root: 'https://yeastmine.yeastgenome.org/yeastmine'
+    };
+    var query = {
+      "name": "Gene_GO",
+      "title": "Gene --> GO terms",
+      "comment": "06.06.07 updated to work from gene class - Philip",
+      "description": "Search for GO annotations for a particular gene.",
+      "from": "Gene",
+      "select": [
+        "secondaryIdentifier",
+        "goAnnotation.ontologyTerm.identifier",
+        "goAnnotation.ontologyTerm.name",
+        "goAnnotation.evidence.code.code",
+        "goAnnotation.ontologyTerm.namespace",
+        "goAnnotation.qualifier"
+      ],
+      "orderBy": [{
+        "path": "secondaryIdentifier",
+        "direction": "ASC"
+      }],
+      "where": [{
+        "path": "Gene",
+        "op": "LOOKUP",
+        "value": "YGL207W",
+        "extraValue": "S. cerevisiae",
+        "code": "A",
+        "editable": true,
+        "switched": "LOCKED",
+        "switchable": false
+      }]
+    };
+
+    imtables.loadTable(
+        selector, // Can also be an element, or a jQuery object.
+        {
+          "start": 0,
+          "size": 25
+        }, // May be null
+        {
+          service: service,
+          query: query
+        } // May be an imjs.Query
+      )
+      //if you omit this next code block we get many results,
+      // but with the added constraint you get only 1.
+      .then(
+        function(table) {
+          console.log('Table loaded', table);
+          //to add a constraint:
+          table.query.addConstraint({
+            "path": "goAnnotation.ontologyTerm.name",
+            "op": "==",
+            "value": "protein binding"
+          });
+
+        },
+        function(error) {
+          console.error('Could not load table', error);
+        }
+      );
+  </script>
+
+  <div id="some-elem"></div>
 
 
-  </body>
+</body>
+
 </html>

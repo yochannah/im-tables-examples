@@ -5,11 +5,11 @@
   <meta charset="utf-8">
   <title></title>
   <script src="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/imjs/3.15.0/im.js"></script>
-
-
+  <link href="styles/main.css" rel="stylesheet" />
+  <title>Summary queries</title>
   <script>
     var service = new imjs.Service({
-      root: "http://www.flymine.org/flymine/service"
+      root: "https://yeastmine.yeastgenome.org/yeastmine"
     });
     var query = {
       from: "Gene",
@@ -22,17 +22,21 @@
 
     var q = new imjs.Query(query, service);
 
-    console.log(q)
     q.summarize("Gene.homologues.homologue.organism.shortName")
     .then(function(response) {
-      console.log("f1")
       console.log(response);
-      console.log("f2")
     });
   </script>
 </head>
-
 <body>
+
+  <nav>
+    <a href="index.html">Back</a>
+    <a href="https://github.com/yochannah/im-tables-examples/blob/master/summary.html">View source on GitHub</a>
+  </nav>
+
+  <h1>Open your console to inspect the results of this query.</h1>
+
 
 </body>
 
