@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <script src="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/imjs/3.15.0/im.js"></script>
+
+
+  <script>
+    var service = new imjs.Service({
+      root: "http://www.flymine.org/flymine/service"
+    });
+    var query = {
+      from: "Gene",
+      select: ["primaryIdentifier"],
+      model: {name: "genomic"}
+    };
+    service.count(query).then(function(response) {
+      console.log(response);
+    });
+
+    var q = new imjs.Query(query, service);
+
+    console.log(q)
+    q.summarize("Gene.homologues.homologue.organism.shortName")
+    .then(function(response) {
+      console.log("f1")
+      console.log(response);
+      console.log("f2")
+    });
+  </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

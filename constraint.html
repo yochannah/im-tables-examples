@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+  <head>
+<meta name="description" content="Adding constraints to a table">
+    <script src="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/imjs/3.15.0/im.min.js"></script>
+    <script src="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/im-tables/2.0.2/imtables.min.js"></script>
+    <link href="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/im-tables/2.0.2/main.css" rel="stylesheet">
+    <title>Adding a query dynamically after the table is initialised</title>
+  </head>
+  <body>
+
+  <a href="index.html">Back</a>
+  <a href="http://yochannah.github.io/im-tables-examples/">View source on GitHub</a>
+
+    <script>
+var selector = '#some-elem';
+var service  = {root: 'http://www.flymine.org/flymine/service/'};
+var query    = {
+  "name": "Gene_GO",
+  "title": "Gene --> GO terms",
+  "comment": "06.06.07 updated to work from gene class - Philip",
+  "description": "Search for GO annotations for a particular gene.",
+  "from": "Gene",
+  "select": [
+    "symbol",
+    "secondaryIdentifier",
+    "goAnnotation.ontologyTerm.identifier",
+    "goAnnotation.ontologyTerm.name",
+    "goAnnotation.evidence.code.code",
+    "goAnnotation.ontologyTerm.namespace",
+    "goAnnotation.qualifier"
+  ],
+  "orderBy": [
+    {
+      "path": "secondaryIdentifier",
+      "direction": "ASC"
+    }
+  ],
+  "where": [
+    {
+      "path": "Gene",
+      "op": "LOOKUP",
+      "value": "Notch",
+      "extraValue": "",
+      "code": "A",
+      "editable": true,
+      "switched": "LOCKED",
+      "switchable": false
+    }
+  ]
+};
+
+imtables.loadTable(
+  selector, // Can also be an element, or a jQuery object.
+  {"start":0,"size":25}, // May be null
+  {service: service, query: query} // May be an imjs.Query
+).then(
+  function (table) { console.log('Table loaded', table);
+  //to add a constraint:
+  table.query.addConstraint(
+    {
+      "path": "goAnnotation.ontologyTerm.name",
+      "op": "==",
+      "value": "protein binding"
+    }
+  )
+
+ },
+  function (error) { console.error('Could not load table', error); }
+);
+    </script>
+
+        <div id="some-elem"></div>
+
+
+  </body>
+</html>
