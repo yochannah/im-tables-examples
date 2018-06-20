@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="description" content="Adding constraints to a table">
+  <script src="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/imjs/3.15.0/im.min.js"></script>
+  <script src="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/im-tables/2.0.2/imtables.min.js"></script>
+  <link href="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/im-tables/2.0.2/main.css" rel="stylesheet">
+  <link href="styles/main.css" rel="stylesheet" />
+  <title>Setting constraint logic after a table is initialised</title>
+</head>
+
+<body>
+
+  <nav>
+    <a href="index.html">Back</a>
+    <a href="https://github.com/yochannah/im-tables-examples/blob/master/constraint-modification.html">View source on GitHub</a>
+  </nav>
+
+  <h1>Setting constraint logic after a table is initialised</h1>
+
+  <script>
+    var selector = '#some-elem';
+    var service = {
+      root: 'https://yeastmine.yeastgenome.org/yeastmine'
+    };
+    var query = {
+      "from": "Gene",
+      "select": [
+        "symbol",
+        "secondaryIdentifier"
+      ],
+      "orderBy": [{
+        "path": "secondaryIdentifier",
+        "direction": "ASC"
+      }],
+      "where": [{
+        "path": "Gene.symbol",
+        //ONE OF allows us to use OR more easily.
+        "op": "ONE OF",
+        //note we have an array of values here
+        "values": ["ENA6", "TSPAN6"],
+        "code": "A"
+      }]
+    };
+
+    imtables.loadTable(
+        selector, // Can also be an element, or a jQuery object.
+        {
+          "start": 0,
+          "size": 25
+        }, // May be null
+        {
+          service: service,
+          query: query
+        } // May be an imjs.Query
+      )
+      .then(
+        function(table) {
+          // selecting the constraint by index only works because I
+          // know it's at position 0 since I set it moments ago.
+          // you might need a real application to check it has the
+          // correct constraint in a more robust manner.
+
+          // 1. remove the old constraint
+          var constraintToRemove = table.query.constraints[0];
+          table.query.removeConstraint(constraintToRemove);
+
+          // 2. add a new constraint, with more items appended into the array
+          constraintToRemove.values.push("CFH");
+          table.query.addConstraint(constraintToRemove);
+
+        },
+        function(error) {
+          console.error('Could not load table', error);
+        }
+      );
+  </script>
+
+  <div id="some-elem"></div>
+
+
+</body>
+
+</html>
