@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="description" content="Adding constraints to a table">
+  <script src="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/imjs/3.15.0/im.min.js"></script>
+  <script src="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/im-tables/2.0.2/imtables.js"></script>
+  <link href="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/im-tables/2.0.2/main.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <link href="styles/main.css" rel="stylesheet" />
+  <title>Adding the im-tables controls dashboard</title>
+</head>
+
+<body>
+
+  <nav>
+    <a href="index.html">Back</a>
+    <a href="https://github.com/yochannah/im-tables-examples/blob/master/with-dashboard.html">View source on GitHub</a>
+  </nav>
+
+  <h1>Adding the im-tables controls dashboard</h1>
+
+  <script>
+
+    var url = "https://apps.araport.org/thalemine/service/",
+        // it's essential to have a token to make the "save as list" button
+        // appear when you use the loadDash() function.
+        // There might be a way to do this via imjs but I can't find it,
+        //so I've used jquery's ajax method instead.
+        auth = $.ajax(url + "session").then(function(response) {
+        var selector = '#some-elem';
+        var service = {
+          root: url,
+          //don't forget to specify the token here
+          token: response.token
+        };
+        var query = {
+          "name": "Gene_GO",
+          "title": "Gene --> GO terms",
+          "comment": "06.06.07 updated to work from gene class - Philip",
+          "description": "Search for GO annotations for a particular gene.",
+          "from": "Gene",
+          "select": [
+            "secondaryIdentifier",
+            "goAnnotation.ontologyTerm.identifier",
+            "goAnnotation.ontologyTerm.name",
+            "goAnnotation.evidence.code.code",
+            "goAnnotation.ontologyTerm.namespace",
+            "goAnnotation.qualifier"
+          ],
+          "orderBy": [{
+            "path": "secondaryIdentifier",
+            "direction": "ASC"
+          }]
+        };
+
+        var table = imtables.loadDash(
+            selector, // Can also be an element, or a jQuery object.
+            {
+              "start": 0,
+              "size": 25
+            }, // May be null
+            {
+              service: service,
+              query: query,
+            } // May be an imjs.Query
+          )
+          .then(
+            function(table) {},
+            function(error) {
+              console.error('Could not load table', error);
+            }
+          );
+      });
+  </script>
+
+  <div id="some-elem"></div>
+
+
+</body>
+
+</html>
