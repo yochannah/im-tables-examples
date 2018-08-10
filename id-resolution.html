@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <script src="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/imjs/3.15.0/im.js"></script>
+  <link href="styles/main.css" rel="stylesheet" />
+  <title>ID Resolution jobs</title>
+  <script>
+    var service = new imjs.Service({
+      root: "https://yeastmine.yeastgenome.org/yeastmine"
+    });
+    var options = {
+      identifiers : ["GATA1"],
+      type : "Gene",
+      // note that extra must be the shortname form,
+      // e.g. "H. sapiens" and not "Homo sapiens"
+      extra : "H. sapiens"
+    };
+    service.resolveIds(options).then(function(resolutionJob) {
+      console.log("Resolution job started, polling for results");
+      resolutionJob.poll(function(resolvedIds) {
+        console.log("Resolution job complete, resolved IDs: ", resolvedIds);
+      });
+    });
+
+  </script>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html">Back</a>
+    <a href="https://github.com/yochannah/im-tables-examples/blob/master/id-resolution.html">View source on GitHub</a>
+  </nav>
+
+  <h1>Open your console to inspect the results of this query.</h1>
+  <p>Some notes: ID resolution jobs can take a long time, so it is actually a two-step process. You first create a job to resolve the ids, then poll for the results.</p>
+
+</body>
+
+</html>
