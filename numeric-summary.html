@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <script src="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/imjs/3.15.0/im.js"></script>
+  <link href="styles/main.css" rel="stylesheet" />
+  <title>Summary queries - advanced demo</title>
+  <script>
+    var service = new imjs.Service({
+      root: "https://yeastmine.yeastgenome.org/yeastmine"
+    });
+    var query = {
+        "from": "Gene",
+        //here we're selecting the name of the pathway and also
+        //the primary and length id of the gene.
+        "select": ["pathways.name", "primaryIdentifier", "length"],
+        "model" : {"name" : "genomic"},
+        "orderBy": [{
+            "path": "pathways.name",
+            "direction": "ASC"
+        }]
+    };
+
+
+    var pathways = new imjs.Query(query, service),
+    pathwaysPath = [query.from, query.select[2]].join('.'); //Gene.length
+
+    console.log("%cpathwaysPath","color:turquoise;font-weight:bold;",pathwaysPath);
+
+    pathways.summarize(pathwaysPath).then(function(pathwaySummary) {
+
+      console.log(pathwaySummary);
+    });
+  </script>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html">Back</a>
+    <a href="https://github.com/yochannah/im-tables-examples/blob/master/numeric-summary.html">View source on GitHub</a>
+  </nav>
+
+  <h1>
+    Demo: Selecting all genes associated with all pathways and returning the names of pathways, row count, and gene length. The summary is performed on the length column and uses the "jsonrows" results format 
+  </h1>
+  <h2>
+    Open your console to inspect the results of this query.
+  </h2>
+
+
+</body>
+
+</html>
