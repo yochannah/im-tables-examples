@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <script src="https://cdn.rawgit.com/intermine/CDN/feb5bb77/js/intermine/imjs/3.15.0/im.js"></script>
+  <link href="styles/main.css" rel="stylesheet" />
+  <title>Enrichment - GO terms</title>
+  <script>
+
+    var service = new imjs.Service({
+      root: 'https://mines.legumeinfo.org/beanmine/service/'
+    });
+    var query    = {
+      "from": "Gene",
+      "select": [
+        "organism.name",
+        "strain.primaryIdentifier",
+        "primaryIdentifier",
+        "secondaryIdentifier",
+        "length",
+        "description"
+      ],
+      "where": [
+        {
+          "path": "Gene",
+          "op": "IN",
+          "value": "Seed weight candidate genes",
+          "code": "A"
+        }
+      ]
+    };
+
+    service.enrichment({
+      "list" : "Seed weight candidate genes",
+      "widget" : "go_enrichment_for_gene",
+      "maxp" : 0.05,
+      "filter" : "biological_process" //this can also be cellular_component
+                                      // or molecular_function
+    }).then(function(response){
+      console.log(response)
+    });
+
+  </script>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html">Back</a>
+    <a href="https://github.com/yochannah/im-tables-examples/blob/master/enrichment.html">View source on GitHub</a>
+  </nav>
+
+  <h1>
+    Demo: get GO enrichment for a gene list.
+  </h1>
+  <h2>
+    Open your console to inspect the results of this query.
+  </h2>
+
+
+</body>
+
+</html>
