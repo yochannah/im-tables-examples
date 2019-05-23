@@ -12,26 +12,6 @@
     var service = new imjs.Service({
       root: 'https://mines.legumeinfo.org/beanmine/service/'
     });
-    var query    = {
-      "from": "Gene",
-      "select": [
-        "organism.name",
-        "strain.primaryIdentifier",
-        "primaryIdentifier",
-        "secondaryIdentifier",
-        "length",
-        "description"
-      ],
-      "where": [
-        {
-          "path": "Gene",
-          "op": "IN",
-          "value": "Seed weight candidate genes",
-          "code": "A"
-        }
-      ]
-    };
-
     service.enrichment({
       "list" : "Seed weight candidate genes",
       "widget" : "go_enrichment_for_gene",
